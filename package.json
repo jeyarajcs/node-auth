@@ -1,0 +1,37 @@
+{
+  "name": "auth",
+  "version": "1.0.0",
+  "description": "email auth",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/server.js --exec babel-node",
+    "build": "babel src -d dist"
+  },
+  "keywords": [
+    "nodejs",
+    "email",
+    "authentication",
+    "user"
+  ],
+  "author": "jeyaraj",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "*",
+    "config": "^3.3.1",
+    "cors": "^2.8.3",
+    "express": "^4.14.0",
+    "helmet": "^3.12.1",
+    "jsonwebtoken": "^8.3.0",
+    "mongoose": "^5.7.1",
+    "nodemailer": "^6.3.0",
+    "nodemailer-sendgrid-transport": "^0.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/node": "^7.10.1",
+    "@babel/preset-env": "^7.10.2",
+    "nodemon": "^1.15.0"
+  }
+}
