@@ -25,7 +25,8 @@
     "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.7.1",
     "nodemailer": "^6.3.0",
-    "nodemailer-sendgrid-transport": "^0.2.0"
+    "nodemailer-sendgrid-transport": "^0.2.0",
+    "regenerator-runtime":"*"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.1",
