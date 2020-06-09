@@ -1,0 +1,15 @@
+{
+    "db":{
+        "url":"mongodb+srv://jeyaraj:Mlh8dhnOHspkrMWS@cluster0-eyskl.azure.mongodb.net/nodeauth?retryWrites=true&w=majority"
+    },
+    "jwt":{
+        "secret":"spaceX",
+        "expiryTime":"5h"
+    },
+    "sendGrid":{
+        "apiKey":"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",
+        "fromEmail":"jeyraj.1994@gmail.com"
+    },
+    "PORT":7000,
+    "verificationURL":"https://jeyarajnode.herokuapp.com"
+}
