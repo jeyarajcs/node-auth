@@ -170,23 +170,31 @@ async function sendMail(admin, purpose){
             htmlContent ="<h4>Dummy</h4>";
             textContent = "Dummy";
         }
+        const account = await nodemailer.createTestAccount();
         
         const options = {
+            host: account.smtp.host,
+            port: account.smtp.port,
+            secure: account.smtp.secure,
             auth: {
-                api_key: SENDGRID_APIKEY
+                user: account.user,
+                pass: account.pass
             }
         }
         // create reusable transporter object using the default SMTP transport
-        let transporter = nodemailer.createTransport(sgTransport(options));
+        let transporter = nodemailer.createTransport(options);
         // send mail with defined transport object
         let info = await transporter.sendMail({
-          from: SENDGRID_EMAIL, // sender address
+          from: 'admin@nodeauth.com', // sender address
           to: admin.email, // list of receivers
           subject: textContent, // Subject line
           text: textContent, // plain text body
           html: htmlContent, // html body
         });
-        return info;
+        return ({
+            emailInfo:info,
+            emailURL: nodemailer.getTestMessageUrl(info)
+        })
     }catch(e){
         return e
     }

@@ -14,25 +14,25 @@ var _helmet = _interopRequireDefault(require("helmet"));
 
 var _config = _interopRequireDefault(require("config"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var app = (0, _express["default"])();
+var app = (0, _express.default)();
 
-var PORT = _config["default"].get('PORT');
+var PORT = process.env.PORT || _config.default.get('PORT');
 
-var DB_URL = _config["default"].get('db.url');
+var DB_URL = _config.default.get('db.url');
 
-_mongoose["default"].Promise = global.Promise;
+_mongoose.default.Promise = global.Promise;
 
-_mongoose["default"].connect(DB_URL);
+_mongoose.default.connect(DB_URL);
 
-app.use((0, _cors["default"])());
-app.use((0, _helmet["default"])());
-app.use(_bodyParser["default"].urlencoded({
+app.use((0, _cors.default)());
+app.use((0, _helmet.default)());
+app.use(_bodyParser.default.urlencoded({
   extended: true
 }));
-app.use(_bodyParser["default"].json());
-(0, _routes["default"])(app);
-app.listen(PORT, function () {
+app.use(_bodyParser.default.json());
+(0, _routes.default)(app);
+app.listen(PORT, () => {
   console.log("you are server is running on ".concat(PORT));
 });

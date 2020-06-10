@@ -8,7 +8,7 @@
     },
     "sendGrid":{
         "apiKey":"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",
-        "fromEmail":"jeyraj.1994@gmail.com"
+        "fromEmail":"admin@nodeauth.com"
     },
     "PORT":7000,
     "verificationURL":"http://localhost:7000"

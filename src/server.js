@@ -7,7 +7,7 @@ import helmet from 'helmet'
 import config from 'config'
  
 const app = express()
-const PORT = config.get('PORT')
+const PORT = process.env.PORT || config.get('PORT')
 const DB_URL = config.get('db.url')
  
 mongoose.Promise = global.Promise;
