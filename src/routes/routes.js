@@ -27,6 +27,16 @@ const routes = (app) => {
         .post(login)
 }
 
+/**
+ * @description Check the JWT token and validate agaist the secret
+ * @param {object} req 
+ * @param {object} res 
+ * @param {object} next 
+ * @async checkTokenAuthentication
+ * @returns {object} 
+ * @version 1.0.0
+ * @author Jeyaraj
+ */
 function checkTokenAuthentication(req, res, next) {
     var jwttoken = req.body.jwttoken || req.query.jwttoken || req.headers['x-access-token'];
     if(jwttoken){
