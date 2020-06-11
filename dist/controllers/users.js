@@ -103,7 +103,8 @@ function updateUser(req, res) {
     sendMail(user, "updateNotification").then(data => {
       res.send({
         status: "success",
-        data: user
+        message: user,
+        data: data
       });
     }).catch(e => {
       res.json(e);

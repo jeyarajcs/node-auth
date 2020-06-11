@@ -24,14 +24,24 @@ var DB_URL = _config.default.get('db.url');
 
 _mongoose.default.Promise = global.Promise;
 
-_mongoose.default.connect(DB_URL);
+_mongoose.default.connect(DB_URL); // ---- SERVE STATIC FILES ---- //
 
+
+app.use(function (req, res, next) {
+  next();
+}, _express.default.static("public"));
 app.use((0, _cors.default)());
 app.use((0, _helmet.default)());
-app.use(_bodyParser.default.urlencoded({
-  extended: true
+app.use(_bodyParser.default.json({
+  limit: "50mb"
 }));
-app.use(_bodyParser.default.json());
+app.use(_bodyParser.default.urlencoded({
+  limit: "50mb",
+  // This limit is for avoid payload too large issue(When request contains base64 kind of files)
+  extended: true,
+  parameterLimit: 50000 // This limit is for avoid payload too large issue
+
+}));
 (0, _routes.default)(app);
 app.listen(PORT, () => {
   console.log("you are server is running on ".concat(PORT));

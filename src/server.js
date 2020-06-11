@@ -13,6 +13,11 @@ const DB_URL = config.get('db.url')
 mongoose.Promise = global.Promise;
 mongoose.connect(DB_URL)
 
+// ---- SERVE STATIC FILES ---- //
+app.use(function(req, res, next) {
+    next();
+}, express.static("public"));
+
 app.use(cors())
 app.use(helmet());
 app.use(bodyParser.json({limit: "50mb"})) 
