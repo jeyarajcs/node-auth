@@ -16,7 +16,17 @@ const User = mongoose.model('User', userSchema)
 const Admin = mongoose.model('Admin', adminSchema)
 
  
-// add new user to the database
+/**
+ * 
+ * @description Create user.
+ * @param {object} req 
+ * @param {object} res 
+ * @async true
+ * @returns Promise
+ * @requires req.body
+ * @version 1.0.0
+ * @author Jeyaraj
+ */
 export function addNewUser(req, res) {
     let newUser = new User(req.body)
     newUser.save((error, user) => {
@@ -28,7 +38,16 @@ export function addNewUser(req, res) {
     })
 }
  
-// get all users from the database
+/**
+ * 
+ * @description Get all users from db.
+ * @param {object} req 
+ * @param {object} res 
+ * @async true
+ * @returns Promise
+ * @version 1.0.0
+ * @author Jeyaraj
+ */
 export function getUsers(req, res) {
     User.find({}, (error, users) => {
         if (error) { res.json(error) }
@@ -39,7 +58,17 @@ export function getUsers(req, res) {
     })
 }
  
-// get single user based on the id
+/**
+ * 
+ * @description Get single user by id.
+ * @param {object} req 
+ * @param {object} res 
+ * @async true
+ * @returns Promise
+ * @requires req.params.id
+ * @version 1.0.0
+ * @author Jeyaraj
+ */
 export function getUser(req, res) {
     User.findById(req.params.id, (error, user) => {
         if (error) { res.json(error) }
@@ -50,14 +79,25 @@ export function getUser(req, res) {
     })
 }
  
-// update the user information based on id
+/**
+ * 
+ * @description Update user - Only admin can edit the record using access token. The user will get email notification also.
+ * @param {object} req 
+ * @param {object} res 
+ * @async true
+ * @returns Promise
+ * @requires req.body,req.params.id
+ * @version 1.0.0
+ * @author Jeyaraj
+ */
 export function updateUser(req, res) {
     User.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true }, (error, user) => {
         if (error) { res.json(error) }
         sendMail(user, "updateNotification").then(data=>{
                 res.send({
                 status: "success",
-                data: user
+                message: user,
+                data: data
             })
         }).catch(e=>{
             res.json(e)
@@ -65,7 +105,17 @@ export function updateUser(req, res) {
     })
 }
  
-// delete the user from the database.
+/**
+ * 
+ * @description Delete a user from db by id.
+ * @param {object} req 
+ * @param {object} res 
+ * @async true
+ * @returns Promise
+ * @requires req.params.id
+ * @version 1.0.0
+ * @author Jeyaraj
+ */
 export function deleteUser(req, res) {
     User.remove({ _id: req.params.id }, (error, user) => {
         if (error) { res.json(error) }
@@ -76,7 +126,17 @@ export function deleteUser(req, res) {
     })
 }
 
-// add new Admin User to the database
+/**
+ * 
+ * @description register a admin user into db. After successfull registration, it will send the email verification link.
+ * @param {object} req 
+ * @param {object} res 
+ * @async true
+ * @returns Promise
+ * @requires req.body
+ * @version 1.0.0
+ * @author Jeyaraj
+ */
 export function addAdmin(req, res) {
     req.body.role = "admin";
     let newAdmin = new Admin(req.body)
@@ -94,7 +154,17 @@ export function addAdmin(req, res) {
     })
 }
 
-// verify Admin User to the database
+/**
+ * 
+ * @description Verify the admin user when clicks on email link. This will be activated the admin user.
+ * @param {object} req 
+ * @param {object} res 
+ * @async true
+ * @returns Promise
+ * @requires req.params.token
+ * @version 1.0.0
+ * @author Jeyaraj
+ */
 export function verifyAdmin(req, res) {
     jsonwebtoken.verify(req.params.token, JWTSecret, (err, decoded)=>{
         if(err){
@@ -115,7 +185,16 @@ export function verifyAdmin(req, res) {
     });
 }
 
-// login
+/**
+ * 
+ * @description Login for Admin user
+ * @param {object} req 
+ * @param {object} res
+ * @async true
+ * @returns Promise - If the email not verified, It throws error.
+ * @version 1.0.0
+ * @author Jeyaraj
+ */
 export function login(req, res) {
     let admin = {
         email: req.body.email,
@@ -139,6 +218,15 @@ export function login(req, res) {
     })
 }
 
+/**
+ * 
+ * @description Generate JWT for authentication
+ * @param {object} data 
+ * @requires data
+ * @returns token
+ * @version 1.0.0
+ * @author Jeyaraj
+ */
 function generateJWT(data){
     try{
         const payload = {
@@ -152,7 +240,17 @@ function generateJWT(data){
     }
 }
 
-//Send email
+/**
+ * 
+ * @description Sending email to user's email
+ * @param {object} admin contain email, role
+ * @param {string} purpose notification type - email verification or update notification
+ * @requires admin,purpose
+ * @returns Promise
+ * @async true
+ * @version 1.0.0
+ * @author Jeyaraj
+ */
 async function sendMail(admin, purpose){
     try{
         let htmlContent ="";
@@ -170,23 +268,31 @@ async function sendMail(admin, purpose){
             htmlContent ="<h4>Dummy</h4>";
             textContent = "Dummy";
         }
+        const account = await nodemailer.createTestAccount();
         
         const options = {
+            host: account.smtp.host,
+            port: account.smtp.port,
+            secure: account.smtp.secure,
             auth: {
-                api_key: SENDGRID_APIKEY
+                user: account.user,
+                pass: account.pass
             }
         }
         // create reusable transporter object using the default SMTP transport
-        let transporter = nodemailer.createTransport(sgTransport(options));
+        let transporter = nodemailer.createTransport(options);
         // send mail with defined transport object
         let info = await transporter.sendMail({
-          from: SENDGRID_EMAIL, // sender address
+          from: 'admin@nodeauth.com', // sender address
           to: admin.email, // list of receivers
           subject: textContent, // Subject line
           text: textContent, // plain text body
           html: htmlContent, // html body
         });
-        return info;
+        return ({
+            emailInfo:info,
+            emailURL: nodemailer.getTestMessageUrl(info)
+        })
     }catch(e){
         return e
     }

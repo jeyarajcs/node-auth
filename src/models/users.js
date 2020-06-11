@@ -1,7 +1,14 @@
 import mongoose from 'mongoose'
  
 const Schema = mongoose.Schema
- 
+
+/**
+ * 
+ * @description User schema
+ * @package mongoose
+ * @version 1.0.0
+ * @author jeyaraj
+ */
 const UserSchema = new Schema({
     name: {
         type: String,

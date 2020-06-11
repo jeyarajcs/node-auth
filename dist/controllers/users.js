@@ -26,30 +26,30 @@ var _users = _interopRequireDefault(require("../models/users"));
 
 var _admin = _interopRequireDefault(require("../models/admin"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-var JWTSecret = _config["default"].get('jwt.secret');
+var JWTSecret = _config.default.get('jwt.secret');
 
-var JWTExpiry = _config["default"].get('jwt.expiryTime');
+var JWTExpiry = _config.default.get('jwt.expiryTime');
 
-var SENDGRID_APIKEY = _config["default"].get('sendGrid.apiKey');
+var SENDGRID_APIKEY = _config.default.get('sendGrid.apiKey');
 
-var SENDGRID_EMAIL = _config["default"].get('sendGrid.fromEmail');
+var SENDGRID_EMAIL = _config.default.get('sendGrid.fromEmail');
 
-var VERIFICATION_URL = _config["default"].get('verificationURL');
+var VERIFICATION_URL = _config.default.get('verificationURL');
 
-var User = _mongoose["default"].model('User', _users["default"]);
+var User = _mongoose.default.model('User', _users.default);
 
-var Admin = _mongoose["default"].model('Admin', _admin["default"]); // add new user to the database
+var Admin = _mongoose.default.model('Admin', _admin.default); // add new user to the database
 
 
 function addNewUser(req, res) {
   var newUser = new User(req.body);
-  newUser.save(function (error, user) {
+  newUser.save((error, user) => {
     if (error) {
       res.json(error);
     }
@@ -63,7 +63,7 @@ function addNewUser(req, res) {
 
 
 function getUsers(req, res) {
-  User.find({}, function (error, users) {
+  User.find({}, (error, users) => {
     if (error) {
       res.json(error);
     }
@@ -77,7 +77,7 @@ function getUsers(req, res) {
 
 
 function getUser(req, res) {
-  User.findById(req.params.id, function (error, user) {
+  User.findById(req.params.id, (error, user) => {
     if (error) {
       res.json(error);
     }
@@ -94,18 +94,19 @@ function updateUser(req, res) {
   User.findOneAndUpdate({
     _id: req.params.id
   }, req.body, {
-    "new": true
-  }, function (error, user) {
+    new: true
+  }, (error, user) => {
     if (error) {
       res.json(error);
     }
 
-    sendMail(user, "updateNotification").then(function (data) {
+    sendMail(user, "updateNotification").then(data => {
       res.send({
         status: "success",
-        data: user
+        message: user,
+        data: data
       });
-    })["catch"](function (e) {
+    }).catch(e => {
       res.json(e);
     });
   });
@@ -115,7 +116,7 @@ function updateUser(req, res) {
 function deleteUser(req, res) {
   User.remove({
     _id: req.params.id
-  }, function (error, user) {
+  }, (error, user) => {
     if (error) {
       res.json(error);
     }
@@ -131,18 +132,18 @@ function deleteUser(req, res) {
 function addAdmin(req, res) {
   req.body.role = "admin";
   var newAdmin = new Admin(req.body);
-  newAdmin.save(function (error, admin) {
+  newAdmin.save((error, admin) => {
     if (error) {
       res.json(error);
     }
 
-    sendMail(admin, "emailVerification").then(function (data) {
+    sendMail(admin, "emailVerification").then(data => {
       res.send({
         status: "success",
         message: "Verification mail has been sent to your email.",
         data: data
       });
-    })["catch"](function (e) {
+    }).catch(e => {
       res.json(e);
     });
   });
@@ -150,7 +151,7 @@ function addAdmin(req, res) {
 
 
 function verifyAdmin(req, res) {
-  _jsonwebtoken["default"].verify(req.params.token, JWTSecret, function (err, decoded) {
+  _jsonwebtoken.default.verify(req.params.token, JWTSecret, (err, decoded) => {
     if (err) {
       res.json({
         status: "error",
@@ -166,7 +167,7 @@ function verifyAdmin(req, res) {
         $set: {
           "isEmailVerified": true
         }
-      }, function (error, admin) {
+      }, (error, admin) => {
         if (error) {
           res.json(error);
         }
@@ -187,7 +188,7 @@ function login(req, res) {
     password: req.body.password,
     isEmailVerified: true
   };
-  Admin.findOne(admin, function (error, admin) {
+  Admin.findOne(admin, (error, admin) => {
     if (error) {
       res.json(error);
     }
@@ -213,7 +214,7 @@ function generateJWT(data) {
       role: data.role
     };
 
-    var token = _jsonwebtoken["default"].sign(payload, JWTSecret, {
+    var token = _jsonwebtoken.default.sign(payload, JWTSecret, {
       expiresIn: JWTExpiry
     });
 
@@ -229,65 +230,56 @@ function sendMail(_x, _x2) {
 }
 
 function _sendMail() {
-  _sendMail = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(admin, purpose) {
-    var htmlContent, textContent, token, options, transporter, info;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.prev = 0;
-            htmlContent = "";
-            textContent = "";
+  _sendMail = _asyncToGenerator(function* (admin, purpose) {
+    try {
+      var htmlContent = "";
+      var textContent = "";
 
-            if (purpose && purpose == "emailVerification") {
-              token = generateJWT(admin);
-              textContent = "Email Verification";
-              htmlContent = "<a href=".concat(VERIFICATION_URL, "/admin/verification/").concat(token, ">Click to verify</a>");
-            } else if (purpose && purpose == "updateNotification") {
-              textContent = "Update Notification";
-              htmlContent = "<h4>Your data that associate with ".concat(admin.email, " has been updated.</h4>");
-            } else {
-              htmlContent = "<h4>Dummy</h4>";
-              textContent = "Dummy";
-            }
-
-            options = {
-              auth: {
-                api_key: SENDGRID_APIKEY
-              }
-            }; // create reusable transporter object using the default SMTP transport
-
-            transporter = _nodemailer["default"].createTransport((0, _nodemailerSendgridTransport["default"])(options)); // send mail with defined transport object
-
-            _context.next = 8;
-            return transporter.sendMail({
-              from: SENDGRID_EMAIL,
-              // sender address
-              to: admin.email,
-              // list of receivers
-              subject: textContent,
-              // Subject line
-              text: textContent,
-              // plain text body
-              html: htmlContent // html body
-
-            });
-
-          case 8:
-            info = _context.sent;
-            return _context.abrupt("return", info);
-
-          case 12:
-            _context.prev = 12;
-            _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", _context.t0);
-
-          case 15:
-          case "end":
-            return _context.stop();
-        }
+      if (purpose && purpose == "emailVerification") {
+        var token = generateJWT(admin);
+        textContent = "Email Verification";
+        htmlContent = "<a href=".concat(VERIFICATION_URL, "/admin/verification/").concat(token, ">Click to verify</a>");
+      } else if (purpose && purpose == "updateNotification") {
+        textContent = "Update Notification";
+        htmlContent = "<h4>Your data that associate with ".concat(admin.email, " has been updated.</h4>");
+      } else {
+        htmlContent = "<h4>Dummy</h4>";
+        textContent = "Dummy";
       }
-    }, _callee, null, [[0, 12]]);
-  }));
+
+      var account = yield _nodemailer.default.createTestAccount();
+      var options = {
+        host: account.smtp.host,
+        port: account.smtp.port,
+        secure: account.smtp.secure,
+        auth: {
+          user: account.user,
+          pass: account.pass
+        }
+      }; // create reusable transporter object using the default SMTP transport
+
+      var transporter = _nodemailer.default.createTransport(options); // send mail with defined transport object
+
+
+      var info = yield transporter.sendMail({
+        from: 'admin@nodeauth.com',
+        // sender address
+        to: admin.email,
+        // list of receivers
+        subject: textContent,
+        // Subject line
+        text: textContent,
+        // plain text body
+        html: htmlContent // html body
+
+      });
+      return {
+        emailInfo: info,
+        emailURL: _nodemailer.default.getTestMessageUrl(info)
+      };
+    } catch (e) {
+      return e;
+    }
+  });
   return _sendMail.apply(this, arguments);
 }

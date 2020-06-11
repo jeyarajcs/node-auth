@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports.default = void 0;
 
 var _mongoose = _interopRequireDefault(require("mongoose"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Schema = _mongoose["default"].Schema;
+var Schema = _mongoose.default.Schema;
 var AdminSchema = new Schema({
   firstName: {
     type: String,
@@ -31,7 +31,7 @@ var AdminSchema = new Schema({
   isEmailVerified: {
     type: Boolean,
     required: true,
-    "default": false
+    default: false
   },
   role: {
     type: String,
@@ -39,4 +39,4 @@ var AdminSchema = new Schema({
   }
 });
 var _default = AdminSchema;
-exports["default"] = _default;
+exports.default = _default;
