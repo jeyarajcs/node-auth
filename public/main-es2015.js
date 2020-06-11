@@ -589,6 +589,9 @@ class AccountService {
         this.userSubject.next(null);
         this.router.navigate(['/account/login']);
     }
+    createUser(user) {
+        return this.http.post(`${_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].apiUrl}/user`, user);
+    }
     register(user) {
         return this.http.post(`${_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].apiUrl}/admin/register`, user);
     }

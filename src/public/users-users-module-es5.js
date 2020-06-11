@@ -402,7 +402,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         value: function createUser() {
           var _this2 = this;
 
-          this.accountService.register(this.form.value).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["first"])()).subscribe(function (data) {
+          this.accountService.createUser(this.form.value).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["first"])()).subscribe(function (data) {
             _this2.alertService.success('User added successfully', {
               keepAfterRouteChange: true
             });

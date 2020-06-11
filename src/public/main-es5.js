@@ -1124,6 +1124,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           this.router.navigate(['/account/login']);
         }
       }, {
+        key: "createUser",
+        value: function createUser(user) {
+          return this.http.post("".concat(_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].apiUrl, "/user"), user);
+        }
+      }, {
         key: "register",
         value: function register(user) {
           return this.http.post("".concat(_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].apiUrl, "/admin/register"), user);
