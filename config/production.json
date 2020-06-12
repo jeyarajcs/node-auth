@@ -1,13 +1,13 @@
 {
     "db":{
-        "url":"mongodb+srv://jeyaraj:Mlh8dhnOHspkrMWS@cluster0-eyskl.azure.mongodb.net/nodeauth?retryWrites=true&w=majority"
+        "url":"db url"
     },
     "jwt":{
         "secret":"spaceX",
         "expiryTime":"5h"
     },
     "sendGrid":{
-        "apiKey":"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",
+        "apiKey":"sendgrid api key",
         "fromEmail":"admin@nodeauth.com"
     },
     "PORT":7000,
